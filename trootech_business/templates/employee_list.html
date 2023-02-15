@@ -1,26 +1,36 @@
+{% include 'templates/employee_base.html' %}
 <!DOCTYPE html>
 <html>
+<head>
+    <link href=https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css rel ="stylesheet">
+</head>
     <body>
-        <table border="1px"> 
-            <thead>
-                <td>id</td>
-                <td>first_name</td>
-                <td>last_name</td>
-                <td>email</td>
-                <td>edit</td>
-                <td>delete</td>
+        <div class="container" style="width: 2000px">
+        <table class="table"> 
+            <thead class="thead-dark">
+                <tr >
+                    <th scope="col">id</th>
+                    <th scope="col">first_name</th>
+                    <th scope="col">last_name</th>
+                    <th scope="col">email</th>
+                    <th scope="col">edit</th>
+                    <th scope="col">delete</th>
+                </tr>
             </thead>
+
         {% for employee_detils in employee %}
-    
-            
         <tr>
             <td>{{employee_detils.id}}</td>
             <td>{{employee_detils.first_name}}</td>
             <td>{{employee_detils.last_name}}</td>
             <td>{{employee_detils.email}}</td>
-            <td><a href="/edit/{{employee_detils.id}}/">Edit</a></td>            
             <td>
-                <form method="POST" action="/delete/{{employee_detils.id}}/">
+                <form method="GET" action = "/login/">
+                {% csrf_token %}
+                <button type="edit">Edit</button>
+                </form>
+            <td>
+                <form method="GET" action="/login/">
                     {% csrf_token %}
                     <button type="submit">Delete</button>
         
@@ -30,5 +40,8 @@
         </tr>
             {% endfor %}
         </table>
+        </div>
+        <link href = https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js rel="stylesheet">
+        <link href = https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js rel ="stylesheet">
     </body>
 </html>

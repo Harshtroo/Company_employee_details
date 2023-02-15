@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 
 class EmployeeForm(forms.ModelForm):
     ''' employee form '''
-    # password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         '''emplyoee meta class'''
         model = Employee
-        fields = ['email','depatments']
+        fields = ['email','first_name','last_name','depatments','password']
 
     # def create_user(self,email,password):
     #     if not email :
