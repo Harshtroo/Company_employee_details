@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # # Create your models here.
 from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.hashers import make_password
 
 class Company(models.Model):
     ''' company name model'''
@@ -16,24 +15,18 @@ class Depatment(models.Model):
         ('ADMIN','Admin'),
         ('CTO','CTO')
     }
-    depatments = models.CharField(choices=DEPATMENTS_CHOICES,max_length=100)             
+    select_role = models.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
 
     def __str__(self):
-        return self.depatments
+        return self.select_role
 
 class Employee(AbstractUser):
     '''this class employee model'''
     username = models.CharField(max_length=150, blank=True, unique=False)
     email = models.EmailField(max_length=100, unique=True)
-    depatments = models.ManyToManyField(Depatment)
+    select_role = models.ManyToManyField(Depatment)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-
-
-    def save(self,*args, **kwargs):
-        '''save password method'''
-        self.password = make_password(self.email +'@1234')
-        super().save(*args,**kwargs)
 
     def soft_delete(self):
         '''soft delete funcction'''

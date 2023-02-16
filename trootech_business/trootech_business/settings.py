@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'employee',
 ]
 AUTH_USER_MODEL ='employee.Employee'
-# LOGIN_REDIRECT_URL = 'logout'
+LOGIN_REDIRECT_URL = '/employee_list/'
+LOGOUT_REDIRECT_URL = '/login/'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

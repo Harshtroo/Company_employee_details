@@ -17,7 +17,6 @@
                     <th scope="col">delete</th>
                 </tr>
             </thead>
-
         {% for employee_detils in employee %}
         <tr>
             <td>{{employee_detils.id}}</td>
@@ -25,7 +24,7 @@
             <td>{{employee_detils.last_name}}</td>
             <td>{{employee_detils.email}}</td>
             <td>
-                <form method="GET" action = "/login/">
+                <form method="GET" action = "employee_edit/pk">
                 {% csrf_token %}
                 <button type="edit">Edit</button>
                 </form>
@@ -36,7 +35,6 @@
         
                 </form>
             </td>
-
         </tr>
             {% endfor %}
         </table>
