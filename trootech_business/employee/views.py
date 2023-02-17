@@ -50,21 +50,28 @@ class CreateEmployee(CreateView):
     form_class = EmployeeForm
     template_name = 'add_employee.html'
 
+    # def post(slef,request):
+    #     print("dcjdbvdvdbv")
+    #     employee_obj = Employee.objects.filter('select_role')
+    #     print(employee_obj)
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST or None)
-        if form.is_valid():
-            print("cleaned_data: ", form.cleaned_data)
-            # remove roles from dict
-            # find the each role's id from department table 
-            # save the form 
-            # many to many field update 
-            # save the form again
-            
-            # form.save()
-            return redirect(reverse("employee_list"))
-        print("form", form)
-        return redirect(reverse("employee_list"))
-            
+        # a = Employee.objects.all()
+        # for i in a:
+        #     print(i.select_role)
+        # print(a)
+        
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        # print(form)
+        form.save()
+        messages.success(request=self.request, message="successfully create")
+        super().form_valid(form)
+        return redirect('employee_list')
+
+    # def form_invalid(self, form):
+    #     messages.error(self.request,"nciusbfvsb")
+    #     return super().form_invalid(form)
+
     def get_success_url(self):
         return reverse_lazy('employee_list')
 
@@ -76,8 +83,9 @@ class EmployeeEditForm(DetailView,UpdateView):
 
     def get(self,request,e_id,*args,**kwagrs):
         context = {}
-        context['user_form'] = EmployeeEdit(instance=Employee.objects.get(id=e_id))
+        context['form'] = EmployeeEdit(instance=Employee.objects.get(id=e_id))
         return render(request,"edit.html",context)
+
     def post(self,request,e_id, *args, **kwargs):
         # context = {}
         form = self.get_form()

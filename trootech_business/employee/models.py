@@ -10,15 +10,15 @@ class Company(models.Model):
 class Depatment(models.Model):
     '''employee details model'''
     DEPATMENTS_CHOICES = {
-        ('DEVELOPER','Developer'),
-        ('HR','HR'),
-        ('ADMIN','Admin'),
-        ('CTO','CTO')
+        ('1','HR'),
+        ('2','Developer'),
+        ('3','Admin'),
+        ('4','CTO')
     }
-    select_role = models.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
+    name = models.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
 
     def __str__(self):
-        return self.select_role
+        return self.name
 
 class Employee(AbstractUser):
     '''this class employee model'''
