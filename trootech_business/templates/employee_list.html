@@ -34,7 +34,7 @@
             <td>{{employee_detils.last_name}}</td>
             <td>{{employee_detils.email}}</td>
             <td>
-                <form method="GET" action="employee_edit">
+                <form method="GET" action="/employee_edit/{{employee_detils.id}}">
                 {% csrf_token %}
                 <button type="edit">Edit</button>
                 </form>

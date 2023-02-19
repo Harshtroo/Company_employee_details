@@ -17,11 +17,10 @@ class LoginForm(forms.ModelForm):
 class EmployeeForm(forms.ModelForm):
     ''' employee form '''
     # password = forms.CharField(widget=forms.PasswordInput)
-    DEPATMENTS_CHOICES = [(i.id,i.name) for i in Depatment.objects.all()]
+    # DEPATMENTS_CHOICES = [(i.id,i.name) for i in Depatment.objects.all()]
     # name = forms.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
     
     select_role = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=Depatment.DEPATMENTS_CHOICES)
-
     class Meta:
         '''emplyoee meta class'''
         model = Employee
@@ -59,4 +58,4 @@ class EmployeeEdit(forms.ModelForm):
     class Meta:
         '''edit employee meta class'''
         model = Employee
-        fields = ['email','first_name','last_name','select_role','id']
+        fields = ['email','first_name','last_name','select_role']

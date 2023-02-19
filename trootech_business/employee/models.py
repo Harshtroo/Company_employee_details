@@ -16,7 +16,7 @@ class Depatment(models.Model):
         ('4','CTO')
     }
     name = models.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
-
+    
     def __str__(self):
         return self.name
 

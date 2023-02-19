@@ -1,9 +1,11 @@
+{% include 'base.html' %}
 <!DOCTYPE html>
 <html>
     <body>
-        <form method="POST" action="{% url 'employee_edit/'%}">
+        <form method="POST" action= '/employee_list/'>
             {% csrf_token %}
             {{ form.as_p}}
+        <button type="submit">submit</button>
         </form>
     </body>
 </html>

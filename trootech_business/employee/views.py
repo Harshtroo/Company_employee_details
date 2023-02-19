@@ -80,11 +80,12 @@ class EmployeeEditForm(DetailView,UpdateView):
     template_name ='employee_edit.html'
     form_class = EmployeeEdit
     model = Employee
+    success_url = 'employee_list'
 
     def get(self,request,e_id,*args,**kwagrs):
         context = {}
         context['form'] = EmployeeEdit(instance=Employee.objects.get(id=e_id))
-        return render(request,"edit.html",context)
+        return render(request,"employee_edit.html",context)
 
     def post(self,request,e_id, *args, **kwargs):
         # context = {}
