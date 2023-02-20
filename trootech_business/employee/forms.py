@@ -19,25 +19,26 @@ class EmployeeForm(forms.ModelForm):
     # password = forms.CharField(widget=forms.PasswordInput)
     # DEPATMENTS_CHOICES = [(i.id,i.name) for i in Depatment.objects.all()]
     # name = forms.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
-    
-    select_role = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=Depatment.DEPATMENTS_CHOICES)
+    select_role = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
+
+    # select_role = Depatment.objects.filter()
+    # print(select_role)
+
     class Meta:
         '''emplyoee meta class'''
         model = Employee
         fields = ['email','first_name','last_name','select_role']
-        
+
     def clean(self):
         super().clean()
-        # print("selffffffffffffffffffffffff", self.cleaned_data['email'])
         email = self.cleaned_data['email']
-    
         if Employee.objects.filter(email=email):
             raise ValidationError("Email Already Exists")
         return self.cleaned_data
 
     def save(self, commit=False):
         '''save password method'''
-        
+
         instance = super().save(commit=True)
         # print("instance****", instance)
         instance.set_password(instance.email +'@1234')
@@ -55,6 +56,8 @@ class EmployeeForm(forms.ModelForm):
 
 class EmployeeEdit(forms.ModelForm):
     '''employee edit form'''
+    select_role = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
+    
     class Meta:
         '''edit employee meta class'''
         model = Employee

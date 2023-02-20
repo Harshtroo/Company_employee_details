@@ -4,7 +4,7 @@ from .models import Employee
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.views.generic import TemplateView, FormView,RedirectView,ListView,DetailView,UpdateView,CreateView
+from django.views.generic import TemplateView,ListView,DetailView,UpdateView,CreateView,DeleteView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
@@ -26,6 +26,10 @@ class Login(LoginView):
 
 
 class Logout(LogoutView):
+    # success_url_allowed_hosts = 'home'
+    # def post(self, request, *args, **kwargs):
+    #     messages.error(request=self.request, message="successfully create")
+    #     return super().post(request, *args, **kwargs)
     pass
 
 
@@ -36,6 +40,8 @@ class EmployeeList(ListView):
     queryset =Employee.objects.all()
     context_object_name = 'employee'
 
+    
+    # select_role_count = Employee.objects.get(select_role = re)
 # class EmployeeEdit(RedirectView):
 #     permanent = False
 #     query_string = True
@@ -49,28 +55,31 @@ class CreateEmployee(CreateView):
     model = Employee
     form_class = EmployeeForm
     template_name = 'add_employee.html'
-
-    # def post(slef,request):
-    #     print("dcjdbvdvdbv")
-    #     employee_obj = Employee.objects.filter('select_role')
-    #     print(employee_obj)
+    
     def post(self, request, *args, **kwargs):
+        # select_role_id = request.POST.getlist('select_role')
+        # print(select_role_id)
+        # form = Employee(request.POST)
+        # employee = request.POST.getlist('employee')
+        # print(employee)
+        # if form.is_validd():
+        #     role = form.save()
+        #     role.user = request.user
+        #     role.save()
+        # else:
+        #     form = Employee()
         # a = Employee.objects.all()
         # for i in a:
-        #     print(i.select_role)
+        #     print(i.id)
         # print(a)
-        
+        # messages.error(request=self.request,message="SBcsiiocd")
         return super().post(request, *args, **kwargs)
     def form_valid(self, form):
-        # print(form)
         form.save()
         messages.success(request=self.request, message="successfully create")
+        # messages.error(request=self.request, message="email already exists")
         super().form_valid(form)
         return redirect('employee_list')
-
-    # def form_invalid(self, form):
-    #     messages.error(self.request,"nciusbfvsb")
-    #     return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy('employee_list')
@@ -83,7 +92,7 @@ class EmployeeEditForm(DetailView,UpdateView):
     success_url = 'employee_list'
 
     def get(self,request,e_id,*args,**kwagrs):
-        context = {}
+        context = {}    
         context['form'] = EmployeeEdit(instance=Employee.objects.get(id=e_id))
         return render(request,"employee_edit.html",context)
 
@@ -93,4 +102,10 @@ class EmployeeEditForm(DetailView,UpdateView):
         form = EmployeeEdit(request.POST,instance=Employee.objects.get(id=e_id))
         if form.is_valid():
             form.save()
+            messages.success(request=self.request, message="successfully updated")
         return redirect('employee_list')
+
+class EmployeeDelete(DeleteView):
+    model = Employee
+    template_name = 'employee_delete.html'
+    success_url = reverse_lazy('employee_list')

@@ -10,13 +10,13 @@ class Company(models.Model):
 class Depatment(models.Model):
     '''employee details model'''
     DEPATMENTS_CHOICES = {
-        ('1','HR'),
-        ('2','Developer'),
-        ('3','Admin'),
-        ('4','CTO')
+        ('HR','HR'),
+        ('DEVLOPER','Developer'),
+        ('ADMIN','Admin'),
+        ('CTO','CTO')
     }
     name = models.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
-    
+
     def __str__(self):
         return self.name
 
@@ -30,6 +30,5 @@ class Employee(AbstractUser):
 
     def soft_delete(self):
         '''soft delete funcction'''
-        self.is_deleted = True
+        self.is_deleted= True
         self.save()
-    

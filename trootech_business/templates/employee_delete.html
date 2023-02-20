@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>delete form</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{delete_form.as_p}}
+            <button type="submit">Delete</button>
+        </form>
+    </body>
+</html>

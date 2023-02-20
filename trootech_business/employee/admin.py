@@ -5,4 +5,4 @@ from .models import  Employee,Depatment
 admin.site.register(Employee)
 admin.site.register(Depatment)
 # # admin.site.register(Depatment)
-
+# context['Depatment']=Depatment.objects.all().annotate(select_role_count = Depatment('select_role'))
