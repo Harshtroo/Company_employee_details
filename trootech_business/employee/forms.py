@@ -30,17 +30,18 @@ class EmployeeForm(forms.ModelForm):
         fields = ['email','first_name','last_name','select_role']
 
     def clean(self):
+        '''clean method for email'''
         super().clean()
-        email = self.cleaned_data['email']
-        if Employee.objects.filter(email=email):
-            raise ValidationError("Email Already Exists")
-        return self.cleaned_data
+        # email = self.cleaned_data['email']
+        # if Employee.objects.filter(email=email):
+        #     raise ValidationError("")
+        # return self.cleaned_data
 
     def save(self, commit=False):
         '''save password method'''
 
         instance = super().save(commit=True)
-        # print("instance****", instance)
+        # print("instance****", instance.email)
         instance.set_password(instance.email +'@1234')
         # print(instance.password)
         if commit:
@@ -57,7 +58,7 @@ class EmployeeForm(forms.ModelForm):
 class EmployeeEdit(forms.ModelForm):
     '''employee edit form'''
     select_role = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
-    
+
     class Meta:
         '''edit employee meta class'''
         model = Employee

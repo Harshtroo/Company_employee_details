@@ -15,7 +15,15 @@
                 {% endif %}
                 <ul style="list-style-type: none;">
                     <li>
+                      <!-- {% for employee_fields in employee%}
+                        {% for select_role_value in employee_fields.select_role.values%}
+                          
+                          {{select_role_value.name}}
+                        {% endfor %}
+                      {% endfor%} -->
+                      {% if 'HR' and 'ADMIN' in request.user.get_roles %}
                         <a class="navbar-brand" href="{% url 'add_employee'%}" >Add Employee</a>
+                      {% endif %}
                         <a class="navbar-brand" href="{% url 'logout' %}">Logout</a>
                         <!-- <a class="navbar-brand" href="{% url 'employee_list' %}">Employee List</a> -->
                     </li> 

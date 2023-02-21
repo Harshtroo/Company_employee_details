@@ -37,17 +37,19 @@
                 <td>{{employee_detils.first_name}}</td>
                 <td>{{employee_detils.last_name}}</td>
                 <td>{{employee_detils.email}}</td>
-                <td data-bs-toggle="tooltip" data-bs-placement="left" title="{{employee_detils.select_role.values}}">{{employee_detils.select_role.count}}</td>
+                    <!-- {{ role.name }}  -->
+                <td data-bs-toggle="tooltip" data-bs-placement="left" title="{% for role in employee_detils.select_role.values %}{{ role.name }} &nbsp;{% endfor%}">{{employee_detils.select_role.count}}</td>
+
                     
                 <td>    
-                    <form method="GET" action="/employee_edit/{{employee_detils.id}}">
-                        {% csrf_token %}
+                    <form method="GET   " action="/employee_edit/{{employee_detils.pk}}">
+                        <!-- {% csrf_token %} -->
                         <button type="edit">Edit</button>
                     </form>
                 <td>
-                    <form method="GET" action="/employee_delete/{{employee_detils.id}}">
+                    <form method="POST" action="/employee_delete/{{employee_detils.id}}">
                         {% csrf_token %}
-                        <button type="submit" data-bs-toggle="tooltip" data-bs-placement="left" title="Tooltip on left">Delete</button>
+                        <button type="submit">Delete</button>
 
                     </form>
                 </td>

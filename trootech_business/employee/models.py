@@ -27,8 +27,13 @@ class Employee(AbstractUser):
     select_role = models.ManyToManyField(Depatment)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+    is_deleted = models.BooleanField(default=False)
 
     def soft_delete(self):
         '''soft delete funcction'''
         self.is_deleted= True
         self.save()
+    
+    @property 
+    def get_roles(self):
+        return [select_value['name'] for select_value in self.select_role.values('name')]

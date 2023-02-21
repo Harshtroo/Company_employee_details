@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html>
     <body>
+        {% if messages %}
+            <ul class="alert alert-success" style="list-style-type: none">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                    </li>
+                    {% endfor %}
+            </ul>
+        {% endif %}
         <h2>delete form</h2>
         <form method="POST">
             {% csrf_token %}
-            {{delete_form.as_p}}
+            {{ form.as_p}}
             <button type="submit">Delete</button>
         </form>
     </body>
