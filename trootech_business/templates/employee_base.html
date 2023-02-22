@@ -15,20 +15,20 @@
                 {% endif %}
                 <ul style="list-style-type: none;">
                     <li>
-
-                      {% if 'HR' and 'ADMIN' in request.user.get_roles %}
+                      <!-- {{ request.user.get_roles }} -->
+                      {% if 'HR' and 'ADMIN' and 'CTO' in request.user.get_roles %}
                         <a class="navbar-brand" href="{% url 'add_employee'%}" >Add Employee</a>
-                      {% comment %} {% elif 'HR' and 'DEVELOPER' in request.user.get_roles %}
-                        <a class="navbar-brand" href="{% url 'add_employee'%}" ></a> 
-                      {% elif 'ADMIN' and 'DEVELOPER' in request.user.get_roles %}
-                        <a class="navbar-brand" href="{% url 'add_employee'%}" ></a> 
-                      {% elif 'HR' and 'CTO' in request.user.get_roles %}
-                        <a class="navbar-brand" href="{% url 'add_employee'%}" ></a> 
-                      {% elif 'ADMIN' and 'CTO' in request.user.get_roles %}
-                        <a class="navbar-brand" href="{% url 'add_employee'%}" ></a>  {% endcomment %}
-                      {% endif %}
+                      {% elif 'DEVELOPER' in request.user.get_roles %}
+                        <a class="navbar-brand"  disabled>Add Employee</a>
+                      {% elif 'ADMIN' in request.user.get_roles %}
+                        <a class="navbar-brand" href="{% url 'add_employee'%}" >Add Employee</a>
+                      {% elif 'HR' in request.user.get_roles %}
+                        <a class="navbar-brand" href="{% url 'add_employee'%}" >Add Employee</a>
+                      {% elif 'HR' and 'DEVELOPER' in request.user.get_roles %}
+                        <a class="navbar-brand" href="{% url 'add_employee'%}" >Add Employee</a>
+
+                      {% endif %} 
                         <a class="navbar-brand" href="{% url 'logout' %}">Logout</a>
-                        <!-- <a class="navbar-brand" href="{% url 'employee_list' %}">Employee List</a> -->
                     </li> 
                 </ul>
               </div>

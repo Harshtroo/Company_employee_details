@@ -33,7 +33,14 @@ class Employee(AbstractUser):
         '''soft delete funcction'''
         self.is_deleted= True
         self.save()
-    
-    @property 
+
+    @property
     def get_roles(self):
         return [select_value['name'] for select_value in self.select_role.values('name')]
+
+    # @property
+    # def has_access(self):
+    #     roles = [select_value['name'] for select_value in self.select_role.values('name')]
+    #     if "HR" or "CTO" or "ADMIN" in roles:
+    #         return True
+    #     return False

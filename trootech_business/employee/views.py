@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.views.generic import TemplateView,ListView,DetailView,UpdateView,CreateView,DeleteView,View
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
 # Create your views here.
@@ -17,20 +17,11 @@ class Home(TemplateView):
 
 class Login(LoginView):
     '''login class '''
-    # form_class = LoginForm
-    # authentication_form = LoginForm
     template_name = 'login.html'
-    # success_url = '/employee_list/'
-    # redirect_authenticated_user = True
     success_message = "Thing was deleted successfully."
-
 
 class Logout(LogoutView):
     '''logout class'''
-    # success_url_allowed_hosts = 'home'
-    # def post(self, request, *args, **kwargs):
-    #     messages.error(request=self.request, message="successfully create")
-    #     return super().post(request, *args, **kwargs)
     pass
 
 
@@ -42,13 +33,17 @@ class EmployeeList(ListView):
     queryset = Employee.objects.filter(is_deleted = False)
     context_object_name = 'employee'
 
-    # def get(self,*args,**kwargs):
-    #     # breakpoint()
-    #     queryset = Employee.objects.filter(is_deleted = False)
-    #     return queryset
-    # select_role_count = Employee.objects.get(select_role = re)
+def not_login(user):
+    if user.get_role == 'HR' and 'ADMIN' and 'CTO':
+       return True
+    return False
 
-class CreateEmployee(CreateView):
+class UserAuthority(object):
+    @method_decorator(user_passes_test(not_login))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserAuthority, self).dispatch(request, *args, **kwargs)
+
+class CreateEmployee(UserAuthority,CreateView):
     '''employee create'''
     model = Employee
     form_class = EmployeeForm
@@ -56,14 +51,12 @@ class CreateEmployee(CreateView):
 
     def post(self, request, *args, **kwargs):
         '''create employee post request'''
-        # messages.error(request=self.request, message="Email already Exists.")
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         ''' create employee form valid or not.'''
         form.save()
         messages.success(request=self.request, message="successfully create")
-        # messages.error(request=self.request, message="email already exists")
         super().form_valid(form)
         return redirect('employee_list')
 
@@ -83,23 +76,6 @@ class EmployeeEditForm(UpdateView):
         '''employee edit post method'''
         messages.success(request=self.request, message="successfully Updated")
         return super().post(request,*args,**kwagrs)
-    # def get(self,request,*args,**kwagrs):
-    #     '''employee form get request. '''
-    #     context = {}
-    #     context['form'] = EmployeeEdit(instance=Employee.objects.get(id=kwagrs['pk']))
-    #     return render(request,"employee_edit.html",context)
-
-    # def post(self,request, *args, **kwargs):
-    #     '''employee form post request.'''
-    #     # context = {}
-    #     # breakpoint()
-    #     form = self.get_form()
-    #     print(form)
-    #     form = EmployeeEdit(request.POST,instance=Employee.objects.get(id=kwargs['pk']))
-    #     if form.is_valid():
-    #         form.save()
-    #         messages.success(request=self.request, message="successfully updated")
-    #     return redirect('employee_list')
 
 class EmployeeDelete(View):
     '''employee delete class'''
