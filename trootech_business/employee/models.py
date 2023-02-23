@@ -11,7 +11,7 @@ class Depatment(models.Model):
     '''employee details model'''
     DEPATMENTS_CHOICES = {
         ('HR','HR'),
-        ('DEVLOPER','Developer'),
+        ('DEVELOPER','Developer'),
         ('ADMIN','Admin'),
         ('CTO','CTO')
     }
@@ -38,9 +38,9 @@ class Employee(AbstractUser):
     def get_roles(self):
         return [select_value['name'] for select_value in self.select_role.values('name')]
 
-    # @property
-    # def has_access(self):
-    #     roles = [select_value['name'] for select_value in self.select_role.values('name')]
-    #     if "HR" or "CTO" or "ADMIN" in roles:
-    #         return True
-    #     return False
+    @property
+    def has_access(self):
+        roles = [select_value['name'] for select_value in self.select_role.values('name')]
+        if roles.__contains__("HR") or roles.__contains__("CTO") or roles.__contains__("ADMIN"):
+            return True
+        return False

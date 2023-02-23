@@ -9,6 +9,9 @@ from django.views.generic import TemplateView,ListView,DetailView,UpdateView,Cre
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
+import functools
+from .decorator import user_authoraice
+
 # Create your views here.
 
 class Home(TemplateView):
@@ -33,17 +36,17 @@ class EmployeeList(ListView):
     queryset = Employee.objects.filter(is_deleted = False)
     context_object_name = 'employee'
 
-def not_login(user):
-    if user.get_role == 'HR' and 'ADMIN' and 'CTO':
-       return True
-    return False
+# def not_login(user):
+#     if user.get_role == 'HR' and 'ADMIN' and 'CTO':
+#        return True
+#     return False
 
-class UserAuthority(object):
-    @method_decorator(user_passes_test(not_login))
-    def dispatch(self, request, *args, **kwargs):
-        return super(UserAuthority, self).dispatch(request, *args, **kwargs)
-
-class CreateEmployee(UserAuthority,CreateView):
+# class UserAuthority(object):
+#     @method_decorator(user_passes_test(not_login))
+#     def dispatch(self, request, *args, **kwargs):
+#         return super(UserAuthority, self).dispatch(request, *args, **kwargs)
+# @user_authoraice
+class CreateEmployee(CreateView):
     '''employee create'''
     model = Employee
     form_class = EmployeeForm
