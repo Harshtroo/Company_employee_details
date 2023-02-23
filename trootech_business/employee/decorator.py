@@ -1,14 +1,13 @@
-# from .models import Employee
-import functools
-# @functools(name='index')
-def user_authoraice(view_func):
-    # roles = [select_value['name'] for select_value in self.select_role.values('name')]
-    # print(roles)
-    @functools.wraps(view_func)
-    def wrapper(request,*args,**kwargs):
-        user_role = request.user.select_role['name']
-        print(request.user)
-    return wrapper
-# def index(request):
-#     role = request.user.select_role['name']
-#     print(role)
+from  django.http import HttpResponseRedirect
+from  django.core.exceptions import PermissionDenied
+from django.urls import reverse
+print("fndhbvhydvs")
+def role_required(allowed_roles=[]):
+    def decorators(view_func):
+        def wrap(request,*args,**kwargs):
+            if request.user.select_role['name'] in allowed_roles:
+                return view_func(request,*args,**kwargs)
+            else:
+                return HttpResponseRedirect(reverse('employee_list'))
+        return wrap
+    return decorators

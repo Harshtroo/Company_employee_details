@@ -9,8 +9,7 @@ from django.views.generic import TemplateView,ListView,DetailView,UpdateView,Cre
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
-import functools
-from .decorator import user_authoraice
+from .decorator import role_required
 
 # Create your views here.
 
@@ -46,6 +45,7 @@ class EmployeeList(ListView):
 #     def dispatch(self, request, *args, **kwargs):
 #         return super(UserAuthority, self).dispatch(request, *args, **kwargs)
 # @user_authoraice
+@role_required(allowed_roles =["ADMIN"])
 class CreateEmployee(CreateView):
     '''employee create'''
     model = Employee
@@ -66,7 +66,6 @@ class CreateEmployee(CreateView):
     def get_success_url(self):
         ''''creae employee form and redirect url'''
         return reverse_lazy('employee_list')
-
 
 class EmployeeEditForm(UpdateView):
     '''employee edit form class'''
