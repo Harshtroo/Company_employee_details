@@ -7,7 +7,7 @@ def user_authoraice(view_func):
     @functools.wraps(view_func)
     def wrapper(request,*args,**kwargs):
         user_role = request.user.select_role['name']
-        print(user_role)
+        print(request.user)
     return wrapper
 # def index(request):
 #     role = request.user.select_role['name']
