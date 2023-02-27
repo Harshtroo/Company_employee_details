@@ -9,9 +9,8 @@ from django.views.generic import TemplateView,ListView,DetailView,UpdateView,Cre
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
-from .decorator import role_required
-
-# Create your views here.
+from .mixin import RoleRequiredMixin,EditProfilemixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Home(TemplateView):
     '''home class'''
@@ -26,7 +25,6 @@ class Logout(LogoutView):
     '''logout class'''
     pass
 
-
 @method_decorator(login_required(login_url="/login/"), name='dispatch')
 class EmployeeList(ListView):
     ''' show employee list'''
@@ -35,18 +33,7 @@ class EmployeeList(ListView):
     queryset = Employee.objects.filter(is_deleted = False)
     context_object_name = 'employee'
 
-# def not_login(user):
-#     if user.get_role == 'HR' and 'ADMIN' and 'CTO':
-#        return True
-#     return False
-
-# class UserAuthority(object):
-#     @method_decorator(user_passes_test(not_login))
-#     def dispatch(self, request, *args, **kwargs):
-#         return super(UserAuthority, self).dispatch(request, *args, **kwargs)
-# @user_authoraice
-@role_required(allowed_roles =["ADMIN"])
-class CreateEmployee(CreateView):
+class CreateEmployee(RoleRequiredMixin, CreateView):
     '''employee create'''
     model = Employee
     form_class = EmployeeForm
@@ -67,7 +54,7 @@ class CreateEmployee(CreateView):
         ''''creae employee form and redirect url'''
         return reverse_lazy('employee_list')
 
-class EmployeeEditForm(UpdateView):
+class EmployeeEditForm(LoginRequiredMixin,UpdateView):
     '''employee edit form class'''
     template_name ='employee_edit.html'
     form_class = EmployeeEdit
@@ -76,8 +63,16 @@ class EmployeeEditForm(UpdateView):
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        messages.success(request=self.request, message="successfully Updated")
-        return super().post(request,*args,**kwagrs)
+        if 'DEVELOPER' in request.user.get_roles:
+            if request.user.id == kwagrs.get('pk'):
+                # print(request.user.id)
+                messages.success(request=self.request, message="Successfully updated")
+                return super().post(request,*args,**kwagrs)
+        elif request.user.has_access:
+            messages.success(request=self.request, message="Successfully updated")
+            return super().post(request,*args,**kwagrs)
+        messages.error(request=self.request, message="You are not Authorised")
+        return redirect(reverse("employee_list"))
 
 class EmployeeDelete(View):
     '''employee delete class'''

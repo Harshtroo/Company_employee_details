@@ -19,6 +19,10 @@ class Depatment(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @classmethod
+    def get_all_roles(cls):
+        return [i[0] for i in cls.DEPATMENTS_CHOICES]
 
 class Employee(AbstractUser):
     '''this class employee model'''

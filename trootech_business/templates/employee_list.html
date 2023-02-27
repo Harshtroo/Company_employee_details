@@ -11,14 +11,14 @@
     <div class="container" style="width: 2000px">
         <table class="table">
             {% if messages %}
-            <ul class="alert alert-success" style="list-style-type: none">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                    {{ message }}
-                    </li>
-                    {% endfor %}
-            </ul>
+                    <ul class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-success{% endif %}" style="list-style-type: none">
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                        {{ message }}
+                        </li>
+                    </ul>
+                {% endfor %}
             {% endif %}
             <thead class="thead-dark">
                 <tr>
