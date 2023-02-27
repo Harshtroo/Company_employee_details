@@ -13,23 +13,23 @@ class RoleRequiredMixin:
             messages.error(request,"You are not Authorised.")
             return redirect('employee_list')
 
-class EditProfilemixin:
-    ''' edit permisions'''
-    def dispatch(self, request, *args, **kwargs):
-        '''edit dispatch'''
-        user_role = request.user.select_role.all()
-        # user_dep = [i.Depatment for i in user_role]
-        # print(user_dep)
+# class EditProfilemixin:
+#     ''' edit permisions'''
+#     def dispatch(self, request, *args, **kwargs):
+#         '''edit dispatch'''
+#         user_role = request.user.select_role.all()
+#         # user_dep = [i.Depatment for i in user_role]
+#         # print(user_dep)
 
-        if Depatment().get_all_roles():
-            print("user roel:  ",user_role[0].name)
-            if user_role[0].name == 'DEVELOPER':
-                print("dfnvjddb")
-                print(Depatment().get_all_roles())
-                return super().dispatch(request, *args, **kwargs)
-            else:
-                print("else")
-                return super().dispatch(request, *args, **kwargs)
+#         if Depatment().get_all_roles():
+#             print("user roel:  ",user_role[0].name)
+#             if user_role[0].name == 'DEVELOPER':
+#                 print("dfnvjddb")
+#                 print(Depatment().get_all_roles())
+#                 return super().dispatch(request, *args, **kwargs)
+#             else:
+#                 print("else")
+#                 return super().dispatch(request, *args, **kwargs)
 
 
 
