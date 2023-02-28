@@ -64,19 +64,19 @@ class EmployeeEditForm(LoginRequiredMixin,UpdateView):
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        if 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) == 1:
-            if request.user.id == kwagrs.get('pk'):
-                messages.success(request=self.request, message="Successfully updated")
-                return super().post(request,*args,**kwagrs)
+        # if 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) == 1:
+        #     if request.user.id == kwagrs.get('pk'):
+        #         messages.success(request=self.request, message="Successfully updated")
+        #         return super().post(request,*args,**kwagrs)
 
-        elif 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) > 1:
-            print("ndfjifbvuisduhv",request.user.get_roles)
-            messages.success(request=self.request, message="Successfully updated")
-            return super().post(request,*args,**kwagrs)
+        # elif 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) > 1:
+        #     print("ndfjifbvuisduhv",request.user.get_roles)
+        #     messages.success(request=self.request, message="Successfully updated")
+        #     return super().post(request,*args,**kwagrs)
 
-        elif request.user.has_access:
-            messages.success(request=self.request, message="Successfully updated")
-            return super().post(request,*args,**kwagrs)
+        # elif request.user.has_access:
+        #     messages.success(request=self.request, message="Successfully updated")
+        #     return super().post(request,*args,**kwagrs)
         messages.error(request=self.request, message="You are not Authorised")
         return redirect(reverse("employee_list"))
 
