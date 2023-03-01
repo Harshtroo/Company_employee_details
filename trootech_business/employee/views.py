@@ -9,9 +9,9 @@ from django.views.generic import TemplateView,ListView,DetailView,UpdateView,Cre
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
-from .mixin import RoleRequiredMixin
-from django.contrib.auth.mixins import LoginRequiredMixin\
-
+from .mixin import RoleRequiredMixin,CustomePermissions
+from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import PermissionRequiredMixin
 
 class Home(TemplateView):
     '''home class'''
@@ -55,19 +55,22 @@ class CreateEmployee(RoleRequiredMixin, CreateView):
         ''''creae employee form and redirect url'''
         return reverse_lazy('employee_list')
 
-class EmployeeEditForm(LoginRequiredMixin,UpdateView):
+class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
     '''employee edit form class'''
     template_name ='employee_edit.html'
     form_class = EmployeeEdit
     model = Employee
     success_url = reverse_lazy('employee_list')
+    permission_required = ['employee.change_depatment']
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        # if 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) == 1:
-        #     if request.user.id == kwagrs.get('pk'):
-        #         messages.success(request=self.request, message="Successfully updated")
-        #         return super().post(request,*args,**kwagrs)
+        if request.user.is_superuser:
+            return super().post(request,*args,**kwagrs)
+        
+        if request.user.id == kwagrs.get('pk'):
+            messages.success(request=self.request, message="Successfully updated")
+            return super().post(request,*args,**kwagrs)
 
         # elif 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) > 1:
         #     print("ndfjifbvuisduhv",request.user.get_roles)
@@ -77,6 +80,7 @@ class EmployeeEditForm(LoginRequiredMixin,UpdateView):
         # elif request.user.has_access:
         #     messages.success(request=self.request, message="Successfully updated")
         #     return super().post(request,*args,**kwagrs)
+
         messages.error(request=self.request, message="You are not Authorised")
         return redirect(reverse("employee_list"))
 
