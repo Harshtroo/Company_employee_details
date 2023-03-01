@@ -24,10 +24,10 @@ class CustomePermissions(PermissionRequiredMixin):
             return True
         return False
 
-    # def handle_no_permission(self):
-    #     if self.request.user.has_access:
-    #         return True
-    #     return super().handle_no_permission()
+    def handle_no_permission(self):
+        if self.request.user.has_access:
+            return True
+        return super().handle_no_permission()
 
 
 # class EditProfilemixin:
