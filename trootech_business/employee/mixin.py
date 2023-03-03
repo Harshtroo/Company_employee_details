@@ -4,8 +4,8 @@ from django.contrib import messages
 from .models import Employee, Depatment
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
-
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group, User, Permission
 class RoleRequiredMixin:
     ''' role require class'''
     def dispatch(self, request, *args, **kwargs):
@@ -17,17 +17,23 @@ class RoleRequiredMixin:
             return redirect('employee_list')
 
 class CustomePermissions(PermissionRequiredMixin):
-    
-    def has_perms(self,request,*args,**kwargs):
-        print(request.user.has_perms(self.permission_required))
-        if request.user.is_authenticated and request.user.has_perms(self.permission_required):
+    # content_type = ContentType.objects.get_for_model(Employee)
+    # print(content_type)
+    # post_permission = Permission.objects.filter(content_type=content_type)
+
+    def has_permission(self):
+        print("kcdhfduvudfn",self.request.user.has_perms(self.permission_required))
+        if self.request.user.is_authenticated and self.request.user.has_perms(self.permission_required):
             return True
         return False
 
-    def handle_no_permission(self):
-        if self.request.user.has_access:
-            return True
-        return super().handle_no_permission()
+
+
+
+    # def handle_no_permission(self):
+    #     if self.request.user.has_access:
+    #         return True
+    #     return super().handle_no_permission()
 
 
 # class EditProfilemixin:

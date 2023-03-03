@@ -12,6 +12,8 @@ from django.urls import reverse,reverse_lazy
 from .mixin import RoleRequiredMixin,CustomePermissions
 from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Group, User, Permission
+from django.contrib.contenttypes.models import ContentType
 
 class Home(TemplateView):
     '''home class'''
@@ -61,14 +63,19 @@ class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
     form_class = EmployeeEdit
     model = Employee
     success_url = reverse_lazy('employee_list')
-    permission_required = ['employee.change_depatment']
+    permission_required = ['employee.change_depatment','employee.add_depatment']
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        if request.user.is_superuser:
-            return super().post(request,*args,**kwagrs)
-        
-        if request.user.id == kwagrs.get('pk'):
+        post_permission = Permission.objects.filter(content_type=content_type)
+        print(post_permission)
+        # print("dfbvbivdfbr",Permission.objects.all())
+        # if request.user.is_superuser:
+        #     return super().post(request,*args,**kwagrs)
+        if request.user.has_access and self.request.user.has_perms(self.permission_required):
+            if request.user.id == kwagrs.get('pk'):
+                messages.success(request=self.request, message="Successfully updated")
+                return super().post(request,*args,**kwagrs)
             messages.success(request=self.request, message="Successfully updated")
             return super().post(request,*args,**kwagrs)
 
