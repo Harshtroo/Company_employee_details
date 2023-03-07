@@ -48,7 +48,7 @@ class CreateEmployee(RoleRequiredMixin, CreateView):
 
     def form_valid(self, form):
         ''' create employee form valid or not.'''
-        form.save()
+        # form.save()
         messages.success(request=self.request, message="successfully create")
         super().form_valid(form)
         return redirect('employee_list')
@@ -67,7 +67,8 @@ class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        post_permission = Permission.objects.filter(content_type=content_type)
+        content_type = ContentType.objects.get(model ='Employee')
+        post_permission = Permission.objects.filter(content_type= content_type)
         print(post_permission)
         # print("dfbvbivdfbr",Permission.objects.all())
         # if request.user.is_superuser:

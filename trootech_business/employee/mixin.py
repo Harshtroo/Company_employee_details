@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Group, User, Permission
+
 class RoleRequiredMixin:
     ''' role require class'''
     def dispatch(self, request, *args, **kwargs):
