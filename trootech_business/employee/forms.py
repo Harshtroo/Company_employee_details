@@ -19,7 +19,7 @@ class EmployeeForm(forms.ModelForm):
     # password = forms.CharField(widget=forms.PasswordInput)
     # DEPATMENTS_CHOICES = [(i.id,i.name) for i in Depatment.objects.all()]
     # name = forms.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
-    select_role = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
+    select_role = forms.ModelMultipleChoiceField(required = True, widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
 
     # select_role = Depatment.objects.filter()
     # print(select_role)
@@ -31,7 +31,16 @@ class EmployeeForm(forms.ModelForm):
 
     def clean(self):
         '''clean method for email'''
-        super().clean()
+        cleaned_data = super().clean()
+        select_role = cleaned_data.get('select_role')
+        # print("select_role===========",select_role)
+
+        if select_role == None:
+            print("select_role===========",select_role)
+            
+            raise ValidationError ("select any role")
+        return super().clean()
+
         # email = self.cleaned_data['email']
         # if Employee.objects.filter(email=email):
         #     raise ValidationError("")
@@ -39,7 +48,6 @@ class EmployeeForm(forms.ModelForm):
 
     def save(self, commit=False):
         '''save password method'''
-
         instance = super().save(commit=True)
         # print("instance****", instance.email)
         instance.set_password(instance.email +'@1234')

@@ -44,14 +44,23 @@ class CreateEmployee(RoleRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         '''create employee post request'''
-        return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        ''' create employee form valid or not.'''
-        # form.save()
-        messages.success(request=self.request, message="successfully create")
-        super().form_valid(form)
+        user_form = self.form_class(request.POST or None)
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            print("user=================",user.select_role.all())
+            user.save()
+            # if user.select_role.all():
+            for i in user.select_role.all():
+                group = Group.objects.get(name = i.name)
+                user.groups.add(group.id)
         return redirect('employee_list')
+
+    # def form_valid(self, form):
+    #     ''' create employee form valid or not.'''
+    #     # form.save()
+    #     messages.success(request=self.request, message="successfully create")
+    #     super().form_valid(form)
+    #     return redirect('employee_list')
 
     def get_success_url(self):
         ''''creae employee form and redirect url'''
@@ -67,9 +76,9 @@ class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
 
     def post(self,request,*args,**kwagrs):
         '''employee edit post method'''
-        content_type = ContentType.objects.get(model ='Employee')
-        post_permission = Permission.objects.filter(content_type= content_type)
-        print(post_permission)
+        # content_type = ContentType.objects.get(model ='Employee')
+        # post_permission = Permission.objects.filter(content_type= content_type)
+        # print(post_permission)
         # print("dfbvbivdfbr",Permission.objects.all())
         # if request.user.is_superuser:
         #     return super().post(request,*args,**kwagrs)
