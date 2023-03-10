@@ -34,7 +34,11 @@
                                         {{ field }}
                                     </div>
                                     {% endfor %}
-
+                                    {% if form.errors %}
+                                        <div class="alert alert-danger">
+                                            {{ form.errors }}
+                                        </div>
+                                    {% endif %}
                                     <button type="submit">submit</button>
                             </div>
                         </div>

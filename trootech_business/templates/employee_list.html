@@ -28,9 +28,8 @@
                     <th scope="col">email</th>
                     <th scope="col">Department</th>
                     <th scope="col">edit</th>
-                    {% if request.user.has_access %}
-                        <th scope="col">delete</th>
-                    {% endif %}
+                    <th scope="col">delete</th>
+                    
                 </tr>
             </thead>
             {% for employee_detils in employee %}
@@ -46,15 +45,14 @@
                         <!-- {% csrf_token %} -->
                         <button type="edit">Edit</button>
                     </form>
-                {% if request.user.has_access %}
+
                 <td>
-                    <form method="POST" action="/employee_delete/{{employee_detils.id}}">
+                    <form method="POST" action="/employee_delete/{{employee_detils.id}}/">
                         {% csrf_token %}
                         <button type="submit">Delete</button>
                     </form>
                 </td>
                 
-                {% endif %}
             </tr>
             {% endfor %}
         </table>

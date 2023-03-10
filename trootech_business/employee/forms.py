@@ -19,11 +19,10 @@ class EmployeeForm(forms.ModelForm):
     # password = forms.CharField(widget=forms.PasswordInput)
     # DEPATMENTS_CHOICES = [(i.id,i.name) for i in Depatment.objects.all()]
     # name = forms.CharField(choices=DEPATMENTS_CHOICES,default="HR",max_length=20)
-    select_role = forms.ModelMultipleChoiceField(required = True, widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all())
+    select_role = forms.ModelMultipleChoiceField( widget=forms.CheckboxSelectMultiple,queryset=Depatment.objects.all(), required=True)
 
     # select_role = Depatment.objects.filter()
     # print(select_role)
-
     class Meta:
         '''emplyoee meta class'''
         model = Employee
@@ -31,20 +30,14 @@ class EmployeeForm(forms.ModelForm):
 
     def clean(self):
         '''clean method for email'''
-        cleaned_data = super().clean()
+        cleaned_data = self.cleaned_data
+        first_name = cleaned_data.get('first_name')
         select_role = cleaned_data.get('select_role')
-        # print("select_role===========",select_role)
+        if not first_name:
+            raise forms.ValidationError({"first_name":"enter first name"})
 
-        if select_role == None:
-            print("select_role===========",select_role)
-            
-            raise ValidationError ("select any role")
-        return super().clean()
-
-        # email = self.cleaned_data['email']
-        # if Employee.objects.filter(email=email):
-        #     raise ValidationError("")
-        # return self.cleaned_data
+        if not select_role:
+            raise forms.ValidationError({"select_role":"select any role"})
 
     def save(self, commit=False):
         '''save password method'''

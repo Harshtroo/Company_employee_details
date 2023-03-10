@@ -20,7 +20,7 @@ class Depatment(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     @classmethod
     def get_all_roles(cls):
         return [i[0] for i in cls.DEPATMENTS_CHOICES]
@@ -46,6 +46,7 @@ class Employee(AbstractUser):
 
     @property
     def has_access(self):
+        print(self.select_role.values('name'))
         roles = [select_value['name'] for select_value in self.select_role.values('name')]
         if roles.__contains__("HR") or roles.__contains__("CTO") or roles.__contains__("ADMIN"):
             return True

@@ -23,51 +23,21 @@ class CustomePermissions(PermissionRequiredMixin):
     # post_permission = Permission.objects.filter(content_type=content_type)
 
     def has_permission(self):
-        print("kcdhfduvudfn",self.request.user.has_perms(self.permission_required))
+        user_permissions = self.request.user.get_all_permissions()
+        if self.request.method == "GET":
+            if self.permission_required.get('GET')[0] in user_permissions:
+                return True
+            return False
+        if self.request.method == "POST":
+            if self.permission_required.get('GET')[0] in user_permissions:
+                return True
+            return False
+        
+        
+        # print("kcdhfduvudfn",self.request.user.has_perms(self.permission_required))
         if self.request.user.is_authenticated and self.request.user.has_perms(self.permission_required):
             return True
         return False
 
 
 
-
-    # def handle_no_permission(self):
-    #     if self.request.user.has_access:
-    #         return True
-    #     return super().handle_no_permission()
-
-
-# class EditProfilemixin:
-#     ''' edit permisions'''
-#     def dispatch(self, request, *args, **kwargs):
-#         '''edit dispatch'''
-#         user_role = request.user.select_role.all()
-#         # user_dep = [i.Depatment for i in user_role]
-#         # print(user_dep)
-
-#         if Depatment().get_all_roles():
-#             print("user roel:  ",user_role[0].name)
-#             if user_role[0].name == 'DEVELOPER':
-#                 print("dfnvjddb")
-#                 print(Depatment().get_all_roles())
-#                 return super().dispatch(request, *args, **kwargs)
-#             else:
-#                 print("else")
-#                 return super().dispatch(request, *args, **kwargs)
-
-
-
-        # if request.user.select_role.filter(id="9").exists():
-        #     return super().dispatch(request, *args, **kwargs)
-        # else:
-        #     print(request.user.select_role.values())
-        #     messages.error(request,"You are not Authorised.")
-        #     return redirect('employee_list')
-
-        # if Employee.select_role.all():
-        #     print("<<<<<<<<<<<<>>>>>>>>>>>>",Employee.select_role.all())
-        #     return super().dispatch(request, *args, **kwargs)
-        # if request.user.select_role.all():
-        #     print(request.user.select_role.all())
-        #     return super().dispatch(request, *args, **kwargs)
-       

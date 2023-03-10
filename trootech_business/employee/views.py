@@ -11,9 +11,8 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
 from .mixin import RoleRequiredMixin,CustomePermissions
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group, User, Permission
-from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 
 class Home(TemplateView):
     '''home class'''
@@ -28,13 +27,16 @@ class Logout(LogoutView):
     '''logout class'''
     pass
 
-@method_decorator(login_required(login_url="/login/"), name='dispatch')
-class EmployeeList(ListView):
+# @method_decorator(login_required(login_url="/login/"), name='dispatch')
+class EmployeeList(LoginRequiredMixin,ListView):
     ''' show employee list'''
     template_name = 'employee_list.html'
     model = Employee
     queryset = Employee.objects.filter(is_deleted = False)
     context_object_name = 'employee'
+    permission_required = {
+        "GET": ["employee.view_depatment"],
+    }
 
 class CreateEmployee(RoleRequiredMixin, CreateView):
     '''employee create'''
@@ -42,25 +44,17 @@ class CreateEmployee(RoleRequiredMixin, CreateView):
     form_class = EmployeeForm
     template_name = 'add_employee.html'
 
-    def post(self, request, *args, **kwargs):
-        '''create employee post request'''
-        user_form = self.form_class(request.POST or None)
-        if user_form.is_valid():
-            user = user_form.save(commit=False)
-            print("user=================",user.select_role.all())
-            user.save()
-            # if user.select_role.all():
-            for i in user.select_role.all():
-                group = Group.objects.get(name = i.name)
-                user.groups.add(group.id)
+    def form_valid(self, form):
+        ''' create employee form valid or not.'''
+        # user_form = self.form_class(self.request.POST or None)
+        user = form.save(commit=False)
+        user.save()
+        for i in user.select_role.all():
+            group = Group.objects.get(name = i.name)
+            user.groups.add(group.id)
+        messages.success(request=self.request, message="successfully create")
+        super().form_valid(form)
         return redirect('employee_list')
-
-    # def form_valid(self, form):
-    #     ''' create employee form valid or not.'''
-    #     # form.save()
-    #     messages.success(request=self.request, message="successfully create")
-    #     super().form_valid(form)
-    #     return redirect('employee_list')
 
     def get_success_url(self):
         ''''creae employee form and redirect url'''
@@ -72,40 +66,42 @@ class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
     form_class = EmployeeEdit
     model = Employee
     success_url = reverse_lazy('employee_list')
-    permission_required = ['employee.change_depatment','employee.add_depatment']
+    permission_required = {
+        "GET": ["employee.change_depatment",],
+        "POST":["employee.change_depatment",]
+    }
+    # permission_required = ['employee.change_depatment','employee.add_depatment']
 
-    def post(self,request,*args,**kwagrs):
-        '''employee edit post method'''
-        # content_type = ContentType.objects.get(model ='Employee')
-        # post_permission = Permission.objects.filter(content_type= content_type)
-        # print(post_permission)
-        # print("dfbvbivdfbr",Permission.objects.all())
-        # if request.user.is_superuser:
-        #     return super().post(request,*args,**kwagrs)
-        if request.user.has_access and self.request.user.has_perms(self.permission_required):
-            if request.user.id == kwagrs.get('pk'):
-                messages.success(request=self.request, message="Successfully updated")
-                return super().post(request,*args,**kwagrs)
-            messages.success(request=self.request, message="Successfully updated")
-            return super().post(request,*args,**kwagrs)
-
-        # elif 'DEVELOPER' in request.user.get_roles and len(request.user.get_roles) > 1:
-        #     print("ndfjifbvuisduhv",request.user.get_roles)
-        #     messages.success(request=self.request, message="Successfully updated")
-        #     return super().post(request,*args,**kwagrs)
-
-        # elif request.user.has_access:
-        #     messages.success(request=self.request, message="Successfully updated")
-        #     return super().post(request,*args,**kwagrs)
-
-        messages.error(request=self.request, message="You are not Authorised")
+    def get(self,request,*args,**kwagrs):
+        if request.user.id == kwagrs.get('pk') or request.user.has_access:
+            return super().get(request,*args,**kwagrs)
+        messages.error(self.request, message="No Permission.")
         return redirect(reverse("employee_list"))
 
-class EmployeeDelete(View):
+    def form_valid(self, form):
+        user_role = form.cleaned_data['select_role']
+        user = Employee.objects.get(email=form.cleaned_data.get('email'))
+        user.groups.clear()
+        for i in user_role:
+            group = Group.objects.get(name = i)
+            user.groups.add(group.id)
+        messages.success(request=self.request, message="Successfully updated.")
+        return super(EmployeeEditForm, self).form_valid(form)
+
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return redirect('employee_list')
+
+class EmployeeDelete(CustomePermissions,View):
     '''employee delete class'''
     model = Employee
     template_name = 'employee_delete.html'
     success_url = reverse_lazy('employee_list')
+    permission_required = {
+        "GET": ["employee.delete_depatment",],
+        "POST":["employee.delete_depatment",]
+    }
 
     def post(self, request, *args, **kwargs):
         ''''employee delete post method'''
@@ -114,3 +110,7 @@ class EmployeeDelete(View):
         employee.save()
         messages.success(request=self.request, message="successfully Deleted.")
         return HttpResponseRedirect(self.success_url)
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return redirect('employee_list')
