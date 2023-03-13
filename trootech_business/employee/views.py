@@ -1,11 +1,11 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from .forms import EmployeeForm,EmployeeEdit
 from .models import Employee
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.views.generic import TemplateView,ListView,DetailView,UpdateView,CreateView,DeleteView,View
+from django.views.generic import TemplateView,ListView,DetailView,UpdateView,CreateView,DeleteView,View,FormView
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse,reverse_lazy
@@ -13,6 +13,8 @@ from .mixin import RoleRequiredMixin,CustomePermissions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, User, Permission
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.conf import settings
 
 class Home(TemplateView):
     '''home class'''
@@ -114,3 +116,22 @@ class EmployeeDelete(CustomePermissions,View):
         # add custom message
         messages.error(self.request, 'You have no permission')
         return redirect('employee_list')
+
+# class InputEmail(TemplateView):
+#     template_name = 'email_input.html'
+
+class SendEmail(FormView):
+    template_name = 'email_input.html'
+
+    # def sendmail(request):
+    #     pass
+        
+
+    #     send_mail(
+    #         'Subject',
+    #         'Email message',
+    #         settings.EMAIL_HOST_USER,
+    #         ['vekariyaharsh2412@gmail.com'],
+    #         fail_silently=False,
+    #     )
+    #     return HttpResponse('Mail successfully sent')
