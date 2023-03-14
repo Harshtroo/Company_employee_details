@@ -64,3 +64,9 @@ class EmployeeEdit(forms.ModelForm):
         '''edit employee meta class'''
         model = Employee
         fields = ['email','first_name','last_name','select_role']
+
+class SendEmail(forms.ModelForm):
+    email = forms.EmailField(max_length=50)
+
+    class Meta:
+        fields = ['email']

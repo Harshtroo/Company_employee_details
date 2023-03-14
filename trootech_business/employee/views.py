@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect,HttpResponse
-from .forms import EmployeeForm,EmployeeEdit
+from .forms import EmployeeForm,EmployeeEdit,SendEmail
 from .models import Employee
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
@@ -15,6 +15,9 @@ from django.contrib.auth.models import Group, User, Permission
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template.loader import render_to_string
+import uuid
+
 
 class Home(TemplateView):
     '''home class'''
@@ -70,7 +73,7 @@ class EmployeeEditForm(LoginRequiredMixin,CustomePermissions,UpdateView):
     success_url = reverse_lazy('employee_list')
     permission_required = {
         "GET": ["employee.change_depatment",],
-        "POST":["employee.change_depatment",]
+        "POST":["employee.change_depSendEmailatment",]
     }
     # permission_required = ['employee.change_depatment','employee.add_depatment']
 
@@ -117,21 +120,35 @@ class EmployeeDelete(CustomePermissions,View):
         messages.error(self.request, 'You have no permission')
         return redirect('employee_list')
 
-# class InputEmail(TemplateView):
-#     template_name = 'email_input.html'
+class ChangePassword(TemplateView):
+    template_name = 'change_password.html'
+    # form_class = SendEmail
 
-class SendEmail(FormView):
+    def get(self, request, *args, **kwargs):
+        return render('change_password.html')
+
+class InputEmail(View):
+    ''' send email '''
     template_name = 'email_input.html'
 
-    # def sendmail(request):
-    #     pass
-        
+    def get(self,request,*args,**kwargs):
+        uniquu_id = uuid.uuid4()
+        print(uniquu_id)
+        return render(request, "email_input.html")
 
-    #     send_mail(
-    #         'Subject',
-    #         'Email message',
-    #         settings.EMAIL_HOST_USER,
-    #         ['vekariyaharsh2412@gmail.com'],
-    #         fail_silently=False,
-    #     )
-    #     return HttpResponse('Mail successfully sent')
+class Email(View):
+
+    def post(self,request):
+        uniquu_id = uuid.uuid4()
+        print(uniquu_id)
+        # print("form",request.GET)
+        send_mail(
+            'chnage your password ',
+            "{% url 'change_password' %}",
+            settings.EMAIL_HOST_USER,
+            ['vekariyaharsh2412@gmail.com'],
+            fail_silently= True,
+            html_message = render_to_string('change_password.html',{'uuid': uniquu_id, "token": "token"})
+        )
+        messages.success(request= self.request, message="Email successfully sent")
+        return redirect('login')
