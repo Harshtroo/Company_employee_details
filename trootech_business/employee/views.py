@@ -17,6 +17,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 import uuid
+from django.contrib.auth import views as auth_views
 
 
 class Home(TemplateView):
@@ -132,19 +133,21 @@ class InputEmail(View):
     template_name = 'email_input.html'
 
     def get(self,request,*args,**kwargs):
-        uniquu_id = uuid.uuid4()
-        print(uniquu_id)
+        # uniquu_id = uuid.uuid4()
+        # print(uniquu_id)
+        print("bvfbbf",request.GET)
+        
         return render(request, "email_input.html")
 
 class Email(View):
 
     def post(self,request):
         uniquu_id = uuid.uuid4()
-        print(uniquu_id)
-        # print("form",request.GET)
+        # print(uniquu_id)
+        print("form",request.GET)
         send_mail(
             'chnage your password ',
-            "{% url 'change_password' %}",
+            " ",
             settings.EMAIL_HOST_USER,
             ['vekariyaharsh2412@gmail.com'],
             fail_silently= True,
@@ -152,3 +155,8 @@ class Email(View):
         )
         messages.success(request= self.request, message="Email successfully sent")
         return redirect('login')
+
+class PasswordReset(auth_views.PasswordResetConfirmView):
+    def get_user(self, uidb64):
+        # token_generator = activation_token
+        pass
